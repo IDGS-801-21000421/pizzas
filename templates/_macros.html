@@ -1,0 +1,14 @@
+{% macro input_text(name, placeholder, type="text") %}
+    <label for="{{ name }}">{{ name.capitalize() }}:</label>
+    <input name="{{ name }}" type="{{ type }}" class="form-control" placeholder="{{ placeholder }}">
+{% endmacro %}
+
+{% macro mostrar_errores(field) %}
+    {% if field.errors %}
+        <ul>
+            {% for error in field.errors %}
+                <li style="color: red;">{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endmacro %}

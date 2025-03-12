@@ -1,0 +1,156 @@
+
+{% import "_macros.html" as macros %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Punto de Venta - Pizzas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container mt-3">
+        <h1 class="text-center text-dark"><strong>Punto de venta</strong></h1>
+        
+        <!-- Mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <h4 class="text-dark">Información del Cliente</h4>
+                <form action="{{ url_for('index') }}" method="POST" novalidate>
+                    {{ form.csrf_token }}
+                    <!-- Datos del cliente -->
+                    <div class="form-group">
+                        <label>Nombre:</label>
+                        <input type="text" class="form-control" placeholder="Ingrese nombre" name="nombre" id="nombre">
+                    </div>
+                    <div class="form-group">
+                        <label>Dirección:</label>
+                        <input type="text" class="form-control" placeholder="Ingrese dirección" name="direccion" id="direccion">
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono:</label>
+                        <input type="number" class="form-control" placeholder="Ingrese teléfono" name="telefono" id="telefono">
+                    </div>
+                    <h4 class="text-dark mt-5">Detalles de pedido</h4>
+                    <!-- Tamaño -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Tamaño Pizza</h5>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="tamaño" id="chica" value="chica">
+                                <label class="form-check-label" for="chica">Chica</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="tamaño" id="mediana" value="mediana">
+                                <label class="form-check-label" for="mediana">Mediana</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="tamaño" id="grande" value="grande">
+                                <label class="form-check-label" for="grande">Grande</label>
+                            </div>
+                        </div>
+                        <!-- Ingredientes  -->
+                        <div class="col-md-6">
+                            <h5>Ingredientes</h5>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="jamon" id="jamon" value="jamon">
+                                <label class="form-check-label" for="jamon">Jamón $10</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="pina" id="pina" value="pina">
+                                <label class="form-check-label" for="pina">Piña $10</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="champi" id="champi" value="champi">
+                                <label class="form-check-label" for="champi">Champiñones $10</label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Número de pizzas  -->
+                    <div class="form-group mt-3">
+                        <label>Número de Pizzas:</label>
+                        <input type="number" class="form-control w-50" placeholder="Cantidad">
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success btn-md">Agregar</button>
+                    </div>
+                </form>
+                </div>
+                <div class="col-md-6">
+                    <h4 class="text-dark">Resumen de Pedidos</h4>
+                    <table class="table table-dark table-striped">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Tamaño</th>
+                                <th>Ingredientes</th>
+                                <th>Cantidad</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for datos in pedido %}
+                            
+                                <td class="px-6 py-3">{{ datos.nombre }}</td>
+                                <td class="px-6 py-3">{{ datos.direccion }}</td>
+                                <td class="px-6 py-3">{{ datos.cantidad }}</td>
+                                <td class="px-6 py-3">{{ datos.subtotal }}</td>
+                        
+                                <div class="d-flex justify-content-between mt-3">
+                                    <button class="btn btn-danger">
+                                        <a href="eliminar?id={{ alum.id }}"></a>
+                                    </button>
+                                    <button class="btn btn-warning">Terminar</button>
+                                </div>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+              
+                <!-- Busquda de ventas -->
+                <h4 class="mt-5 text-dark">Busqueda de ventas</h4>
+                <div class="row">
+                    <div class="col-md-3">
+                        <td><input type="radio" name="dia"> Dia</td>
+                    </div>
+                    <div class="col-md-4">
+                        <td><input type="radio" name="mes"> Mes</td>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="date" class="form-control" name="fecha">
+                    </div>
+                    <div class="col-md-4">
+                        <button class=" text-white bg-secondary btn">Buscar</button>
+                    </div>
+                </div>
+
+                <!-- Ventas realizadas -->
+               <form action="/pedidos" method="GET">
+                    <h4 class="mt-5 text-dark">Ventas Realizadas</h4>
+                    <div class="ventas-card">
+                        {% for datos in pedido %}        
+                            <td class="px-6 py-3">{{ datos.nombre }}</td>
+                            <td class="px-6 py-3">{{ datos.subtotal }}</td>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-info">Ventas totales por día</button>
+                    </div>
+               </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
